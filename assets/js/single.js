@@ -5,13 +5,18 @@ var repoNameEl = document.querySelector("#repo-name");
 var getRepoName = function () {
   //grab repo name from query string
   var queryString = document.location.search;
-
-  //if repo name exists, display repoName & Issues
+  
+  //split query string to get repo name
   var repoName = queryString.split("=")[1];
+
+  //if repo name exists, push to getRepoIssues & render displayIssues
   if(repoName){
   getRepoIssues(repoName);
+
+  //display repo name
   repoNameEl.textContent = repoName;
-  //if repo doesnt exist, go redirect to index.html
+
+  //if repo doesnt exist, redirect to index.html
   }else{
     location.replace("./index.html");
   }
@@ -24,7 +29,7 @@ var getRepoIssues = function (repo) {
     //if request was successful
     if (response.ok) {
       response.json().then(function (data) {
-        //pass response data to dom function
+        //pass response data to dom function to create issue elements
         displayIssues(data);
 
         //check if api has paginated issues
@@ -32,6 +37,8 @@ var getRepoIssues = function (repo) {
             displayWarning(repo);
         }
       });
+
+      //if request wasnt successful, redirec to index.html
     } else {
       location.replace("./index.html");
     }
@@ -39,11 +46,15 @@ var getRepoIssues = function (repo) {
 };
 getRepoName();
 
+
+//function to render issues to page
 var displayIssues = function (issues) {
     if(issues.length===0){
         issueContainerEl.textContent = "This repo has no open issues.";
         return;
     }
+
+    //cycle through data & create elements to display issues
   for (var i = 0; i < issues.length; i++) {
     //create a link element to take users to the issue on Github
     var issuesEl = document.createElement("a");
